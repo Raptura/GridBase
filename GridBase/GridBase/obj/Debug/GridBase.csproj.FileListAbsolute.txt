@@ -1,0 +1,5 @@
+C:\Users\tug11760\Documents\GitHub\GridBase\GridBase\GridBase\bin\Debug\GridBase.dll
+C:\Users\tug11760\Documents\GitHub\GridBase\GridBase\GridBase\bin\Debug\GridBase.pdb
+C:\Users\tug11760\Documents\GitHub\GridBase\GridBase\GridBase\obj\Debug\GridBase.csprojResolveAssemblyReference.cache
+C:\Users\tug11760\Documents\GitHub\GridBase\GridBase\GridBase\obj\Debug\GridBase.dll
+C:\Users\tug11760\Documents\GitHub\GridBase\GridBase\GridBase\obj\Debug\GridBase.pdb

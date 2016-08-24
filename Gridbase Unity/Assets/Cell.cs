@@ -139,12 +139,13 @@ public class Cell : MonoBehaviour
         {
             for (int y = -yBound; y <= yBound; y++)
             {
-                if (x == 0 && y == 0) //that is this current cell
-                    continue;
 
                 Cell currentCell = grid.getCellAtPos(x, y);
-                if (getDist(this, currentCell) <= radius)
-                    neighbors.Add(currentCell);
+                if (currentCell != null && currentCell != this)
+                {
+                    if (getDist(this, currentCell) <= radius)
+                        neighbors.Add(currentCell);
+                }
             }
         }
 
@@ -160,7 +161,7 @@ public class Cell : MonoBehaviour
     {
         return getAllInRadius(1);
     }
-    
+
     /// <summary>
     /// Gets a neighbor cell in a specified direction
     /// </summary>
@@ -217,12 +218,12 @@ public class Cell : MonoBehaviour
                 if (grid.hasFlatTop)
                     return getNeighbor(1, 0);
                 else
-                    return getNeighbor(0, 1);
+                    return getNeighbor(1, 0);
             case Direction.SouthWest:
                 if (grid.hasFlatTop)
-                    return getNeighbor(-1, 1);
+                    return getNeighbor(-1, 0);
                 else
-                    return getNeighbor(-1, 1);
+                    return getNeighbor(-1, 0);
 
             case Direction.West:
                 if (grid.hasFlatTop)
@@ -266,11 +267,14 @@ public class Cell : MonoBehaviour
             cellObj.GetComponent<Cell>().x = x;
             cellObj.GetComponent<Cell>().y = y;
 
+            cellObj.AddComponent<SpriteRenderer>();
+
             //cellObj.AddComponent<MeshRenderer>();
             //cellObj.AddComponent<MeshFilter>();
+            //cellObj.GetComponent<MeshRenderer>().material.shader = Shader.Find("Sprites/Default");
 
-            cellObj.AddComponent<LineRenderer>();
-            cellObj.GetComponent<LineRenderer>().material.shader = Shader.Find("Sprites/Default");
+            //cellObj.AddComponent<LineRenderer>();
+            //cellObj.GetComponent<LineRenderer>().material.shader = Shader.Find("Sprites/Default");
 
             cellObj.transform.SetParent(grid.transform);
 
@@ -298,8 +302,9 @@ public class Cell : MonoBehaviour
     void CellUpdate()
     {
         maintainPos();
+        drawCellSprite();
         //drawCellMesh();
-        drawCellLine();
+        //drawCellLine();
     }
 
     /// <summary>
@@ -318,7 +323,6 @@ public class Cell : MonoBehaviour
     /// (Broken)
     /// </summary>
     /// 
-    [Obsolete("This is ONLY for development testing: DO NOT USE", true)]
     public void drawCellMesh()
     {
         Vector3[] verticies = new Vector3[6];
@@ -328,20 +332,19 @@ public class Cell : MonoBehaviour
         for (int i = 0; i < 6; i++)
         {
             float angle = Mathf.Deg2Rad * (60 * i + (grid.hasFlatTop ? 0 : 30));
-            float vectX = transform.position.x + grid.cellSize * Mathf.Cos(angle);
-            float vectY = transform.position.y + grid.cellSize * Mathf.Sin(angle);
+            float vectX = (grid.cellSize * Mathf.Cos(angle));
+            float vectY = (grid.cellSize * Mathf.Sin(angle));
 
             verticies[i] = new Vector2(vectX, vectY);
         }
+        //for (int i = 0; i < 6; i++)
+        //{
+        //    int nextIndex = i + 1;
+        //    if (nextIndex >= 6)
+        //        nextIndex = 0;
 
-        for (int i = 0; i < 6; i++)
-        {
-            int nextIndex = i + 1;
-            if (nextIndex >= 6)
-                nextIndex = 0;
-
-            //Debug.DrawLine(verticies[i], verticies[nextIndex]); //For Internal Use only
-        }
+        //    Debug.DrawLine(verticies[i], verticies[nextIndex]); //For Internal Use only
+        //}
 
         Mesh mesh = GetComponent<MeshFilter>().mesh;
         mesh.Clear();
@@ -351,6 +354,9 @@ public class Cell : MonoBehaviour
         mesh.RecalculateBounds();
         mesh.MarkDynamic();
         mesh.Optimize();
+
+        MeshRenderer renderer = GetComponent<MeshRenderer>();
+        renderer.material.color = Color.white;
     }
 
     /// <summary>
@@ -395,6 +401,11 @@ public class Cell : MonoBehaviour
 
             Debug.DrawLine(verticies[i], verticies[nextIndex]); //For Internal Use only
         }
+    }
+
+    public void drawCellSprite()
+    {
+        GetComponent<SpriteRenderer>().color = Color.white;
     }
 
     void Update()

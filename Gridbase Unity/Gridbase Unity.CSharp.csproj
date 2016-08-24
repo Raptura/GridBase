@@ -64,6 +64,8 @@
   <ItemGroup>
     <Compile Include="Assets\Cell.cs" />
     <Compile Include="Assets\GridBaseEditor.cs" />
+    <Compile Include="Assets\Hex Tests\CameraScript.cs" />
+    <Compile Include="Assets\Hex Tests\Player.cs" />
     <Compile Include="Assets\HexGrid.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />

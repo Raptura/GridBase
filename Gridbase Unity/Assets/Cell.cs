@@ -131,21 +131,23 @@ public class Cell : MonoBehaviour
     {
         List<Cell> neighbors = new List<Cell>();
 
-        for (int i = 0; i < grid.cells.Count; i++)
-        {
-            for (int x = -radius; x <= radius; x++)
-            {
-                for (int y = -radius; y <= radius; y++)
-                {
-                    if (x == 0 && y == 0)
-                        continue;
+        int xBound = radius + Mathf.Abs(this.x);
+        int yBound = radius + Mathf.Abs(this.y);
 
-                    Cell currentCell = grid.getCellAtPos(x, y);
-                    if (getDist(this, currentCell) <= radius)
-                        neighbors.Add(currentCell);
-                }
+
+        for (int x = -xBound; x <= xBound; x++)
+        {
+            for (int y = -yBound; y <= yBound; y++)
+            {
+                if (x == 0 && y == 0) //that is this current cell
+                    continue;
+
+                Cell currentCell = grid.getCellAtPos(x, y);
+                if (getDist(this, currentCell) <= radius)
+                    neighbors.Add(currentCell);
             }
         }
+
 
         return neighbors;
     }
@@ -158,7 +160,7 @@ public class Cell : MonoBehaviour
     {
         return getAllInRadius(1);
     }
-
+    
     /// <summary>
     /// Gets a neighbor cell in a specified direction
     /// </summary>
@@ -213,9 +215,9 @@ public class Cell : MonoBehaviour
                     return null;
             case Direction.SouthEast:
                 if (grid.hasFlatTop)
-                    return getNeighbor(0, 1);
-                else
                     return getNeighbor(1, 0);
+                else
+                    return getNeighbor(0, 1);
             case Direction.SouthWest:
                 if (grid.hasFlatTop)
                     return getNeighbor(-1, 1);
@@ -268,6 +270,7 @@ public class Cell : MonoBehaviour
             //cellObj.AddComponent<MeshFilter>();
 
             cellObj.AddComponent<LineRenderer>();
+            cellObj.GetComponent<LineRenderer>().material.shader = Shader.Find("Sprites/Default");
 
             cellObj.transform.SetParent(grid.transform);
 

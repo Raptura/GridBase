@@ -6,8 +6,10 @@ using System;
 /// <summary>
 /// A Standard Hexagon Grid
 /// </summary>
-public class HexGrid : MonoBehaviour
+[System.Serializable, CreateAssetMenu]
+public class HexGrid : ScriptableObject
 {
+
     /// <summary>
     /// Gets or sets the size of the cell.
     /// Size is relative to your drawing handler
@@ -15,6 +17,7 @@ public class HexGrid : MonoBehaviour
     /// <value>
     /// The size of the cell.
     /// </value>
+    [SerializeField]
     public float cellSize = 1.0f;
 
     /// <summary>
@@ -23,9 +26,13 @@ public class HexGrid : MonoBehaviour
     /// <value>
     /// <c>true</c> if this instance has flat top; otherwise, <c>false</c>.
     /// </value>
+    [SerializeField]
     public bool hasFlatTop = true;
-
-    public List<Cell> cells = new List<Cell>();
+    /// <summary>
+    /// The list of cells associated with the grid
+    /// </summary>
+    [SerializeField]
+    public List<Cell> cells;
 
     /// <summary>
     /// Gets the cell at a specific position
@@ -50,17 +57,33 @@ public class HexGrid : MonoBehaviour
     /// <param name="x">The x.</param>
     /// <param name="y">The y.</param>
     /// <param name="radius">The radius.</param>
-    public void createCellGroup(int x, int y, int radius)
+    public List<Cell> createCellGroup(int x, int y, int radius)
     {
+        List<Cell> created = new List<Cell>();
         for (int mx = -radius; mx <= radius; mx++)
         {
             for (int my = -radius; my <= radius; my++)
             {
                 if (Mathf.Abs(mx + my) <= radius)
-                    Cell.createCell(this, mx + x, my + y, cellSize);
+                {
+                    Cell newCell = Cell.createCell(mx + x, my + y);
+                    this.cells.Add(newCell);
+                    created.Add(newCell);
+                }
             }
         }
+        return created;
+
     }
 
-
+    /// <summary>
+    /// Links the cells in the cell list to this grid
+    /// </summary>
+    public void linkCells()
+    {
+        foreach (Cell cell in cells)
+        {
+            cell.grid = this;
+        }
+    }
 }

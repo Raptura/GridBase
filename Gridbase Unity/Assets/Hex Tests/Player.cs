@@ -5,7 +5,8 @@ public class Player : MonoBehaviour
 {
 
     Cell.Direction direction;
-    public HexGrid grid;
+    public HexGridBoard board;
+    private HexGrid grid;
     int x = 0;
     int y = 0;
 
@@ -15,6 +16,7 @@ public class Player : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        grid = board.grid;
         lastMoved = Mathf.NegativeInfinity;
     }
 
@@ -69,16 +71,16 @@ public class Player : MonoBehaviour
         }
     }
 
-    void highlightCellLine()
+    void highlightCellLine(int dist)
     {
-        Cell cell = grid.getCellAtPos(x, y);
+        MapCell cell = board.getCellAtPos(x, y);
         //cell.GetComponent<MeshRenderer>().material.color = Color.blue;
         cell.gameObject.GetComponent<SpriteRenderer>().color = Color.blue;
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < dist; i++)
         {
-            if (cell.getNeighbor(direction))
-                cell = cell.getNeighbor(direction);
+            if (cell.cellData.getNeighbor(direction) != null)
+                cell = board.getCellAtPos(cell.cellData.getNeighbor(direction).x, cell.cellData.getNeighbor(direction).y);
             else
                 break;
 
@@ -92,51 +94,73 @@ public class Player : MonoBehaviour
 
     void highlightCellNeighbor()
     {
-        Cell cell = grid.getCellAtPos(x, y);
+        MapCell cell = board.getCellAtPos(x, y);
         //cell.GetComponent<MeshRenderer>().material.color = Color.blue;
-        cell.gameObject.GetComponent<SpriteRenderer>().color = Color.blue;
-
-        foreach (Cell surroundingcell in cell.getNeightbors())
+        if (cell != null)
         {
-            surroundingcell.gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
+            cell.gameObject.GetComponent<SpriteRenderer>().color = Color.blue;
+
+            foreach (Cell surroundingcell in cell.cellData.getNeightbors())
+            {
+                MapCell obj = board.getCellAtPos(surroundingcell.x, surroundingcell.y);
+
+                if (obj != null)
+                {
+                    obj.gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
+                }
+            }
         }
     }
 
-    void highlightCellNuke() {
+    void highlightCellRemoteRadial(int dist)
+    {
 
-        Cell cell = grid.getCellAtPos(x, y);
-        cell.gameObject.GetComponent<SpriteRenderer>().color = Color.blue;
-
-        for (int i = 0; i < 5; i++)
+        MapCell cell = board.getCellAtPos(x, y);
+        if (cell != null)
         {
-            if (cell.getNeighbor(direction))
-                cell = cell.getNeighbor(direction);
-            else
-                break;
+            cell.gameObject.GetComponent<SpriteRenderer>().color = Color.blue;
 
-            if (cell)
+            for (int i = 0; i < dist; i++)
             {
-                cell.gameObject.GetComponent<SpriteRenderer>().color = Color.green;
+                if (cell.cellData.getNeighbor(direction) != null)
+                {
+                    Cell neighbor = cell.cellData.getNeighbor(direction);
+                    cell = board.getCellAtPos(neighbor.x, neighbor.y);
+                }
+                else
+                    break;
+
+                if (cell != null)
+                {
+                    cell.gameObject.GetComponent<SpriteRenderer>().color = Color.green;
+                }
             }
-        }
 
-        cell.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+            cell.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
 
-        foreach (Cell surroundingcell in cell.getNeightbors())
-        {
-            surroundingcell.gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
+            foreach (Cell surroundingcell in cell.cellData.getNeightbors())
+            {
+                MapCell obj = board.getCellAtPos(surroundingcell.x, surroundingcell.y);
+
+                if (obj != null)
+                {
+                    obj.gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
+                }
+            }
         }
     }
 
     void moveForward()
     {
-        Cell cell = grid.getCellAtPos(x, y);
-        cell = cell.getNeighbor(direction);
-        if (cell != null)
+        MapCell m_cell = board.getCellAtPos(x, y);
+        Cell neighbor = m_cell.cellData.getNeighbor(direction);
+        m_cell = board.getCellAtPos(neighbor.x, neighbor.y);
+
+        if (m_cell != null)
         {
-            x = cell.x;
-            y = cell.y;
-            transform.position = cell.transform.position;
+            x = m_cell.cellData.x;
+            y = m_cell.cellData.y;
+            transform.position = m_cell.transform.position;
         }
     }
 }

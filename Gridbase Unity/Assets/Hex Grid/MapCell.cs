@@ -41,9 +41,17 @@ public class MapCell : MonoBehaviour
     /// </summary>
     public void maintainPos()
     {
-        float posX = (float)cellData.x * (3f / 2f) * cellData.grid.cellSize;
-        float posY = (((float)cellData.x / 2f) - (cellData.y + cellData.x)) * Mathf.Sqrt(3) * cellData.grid.cellSize;
+        float posX, posY;
+        if (cellData.grid.hasFlatTop)
+        {
+            posX = (float)cellData.x * (3f / 2f) * cellData.grid.cellSize;
+            posY = (((float)cellData.x / 2f) - (cellData.y + cellData.x)) * Mathf.Sqrt(3) * cellData.grid.cellSize;
+        }
+        else {
 
+            posX = ((cellData.x) - ((float)(cellData.x + cellData.y) / 2f)) * Mathf.Sqrt(3) * cellData.grid.cellSize;
+            posY = (float)(cellData.y + cellData.x) * (3f / 2f) * cellData.grid.cellSize;
+        }
         transform.localPosition = new Vector2(posX, posY);
     }
 
@@ -111,7 +119,7 @@ public class MapCell : MonoBehaviour
         }
     }
 
-    public void drawCellDebug()
+    public void drawCellDebug(Color lineColor)
     {
         Vector3[] verticies = new Vector3[6];
 
@@ -130,7 +138,7 @@ public class MapCell : MonoBehaviour
             if (nextIndex >= 6)
                 nextIndex = 0;
 
-            Debug.DrawLine(verticies[i], verticies[nextIndex]); //For Internal Use only
+            Debug.DrawLine(verticies[i], verticies[nextIndex], lineColor ,0); //For Internal Use only
         }
     }
 

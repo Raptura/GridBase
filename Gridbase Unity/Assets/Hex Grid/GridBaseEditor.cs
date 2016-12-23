@@ -18,6 +18,8 @@ public class GridBaseEditor : EditorWindow
     int x = 0, y = 0; //default 0, 0 values;
 
 
+    Color lineColor = Color.white;
+
     [MenuItem("Window/GridBase/HexGrid")]
     public static void ShowWindow()
     {
@@ -46,7 +48,7 @@ public class GridBaseEditor : EditorWindow
     /// </summary>
     void ManagementGUI()
     {
-        EditorGUILayout.LabelField("Grid Base Version: 0.40");
+        EditorGUILayout.LabelField("Grid Base Version: 0.75");
         EditorGUILayout.LabelField("Hex Grid Information");
         board = (HexGridBoard)EditorGUILayout.ObjectField("Board", board, typeof(HexGridBoard), allowSceneObjects: true);
         if (board != null)
@@ -121,11 +123,22 @@ public class GridBaseEditor : EditorWindow
                 }
             }
 
+            EditorGUI.BeginChangeCheck();
+            grid.hasFlatTop = EditorGUILayout.Toggle("Has Flat Top", grid.hasFlatTop);
+            grid.cellSize = EditorGUILayout.FloatField("Cell Size", grid.cellSize);
+
+            if (GUI.changed)
+            {
+                EditorUtility.SetDirty(grid);
+                redrawAll();
+            }
+            EditorGUI.EndChangeCheck();
+            lineColor = EditorGUILayout.ColorField("(Debug) Line Color", lineColor);
+
             foreach (MapCell mapCell in board.GetComponentsInChildren<MapCell>())
             {
-                mapCell.drawCellDebug();
+                mapCell.drawCellDebug(lineColor);
             }
-
         }
     }
 
@@ -203,6 +216,14 @@ public class GridBaseEditor : EditorWindow
             //Cell Size
             EditorGUILayout.PrefixLabel("Cell Size");
             cellSize = EditorGUILayout.FloatField(cellSize);
+        }
+    }
+
+    public void redrawAll()
+    {
+        foreach (MapCell m_cell in board.transform.GetComponentsInChildren<MapCell>())
+        {
+            m_cell.maintainPos();
         }
     }
 }

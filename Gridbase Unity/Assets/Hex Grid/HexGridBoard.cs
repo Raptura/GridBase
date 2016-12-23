@@ -33,7 +33,7 @@ public class HexGridBoard : MonoBehaviour
         {
             foreach (MapCell m_cell in GetComponentsInChildren<MapCell>())
             {
-                if (m_cell.cellData.x == cell.x && m_cell.cellData.x == cell.y)
+                if (m_cell.cellData.x == cell.x && m_cell.cellData.y == cell.y)
                     return m_cell;
             }
         }

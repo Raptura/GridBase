@@ -24,7 +24,9 @@ public class Player : MonoBehaviour
     void Update()
     {
         inputHandling();
+        //highlightCellLine(3);
         highlightCellNeighbor();
+        highlightCellRemoteRadial(6);
     }
 
     void inputHandling()
@@ -106,7 +108,7 @@ public class Player : MonoBehaviour
 
                 if (obj != null)
                 {
-                    obj.gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
+                    obj.gameObject.GetComponent<SpriteRenderer>().color = Color.magenta;
                 }
             }
         }
@@ -154,13 +156,15 @@ public class Player : MonoBehaviour
     {
         MapCell m_cell = board.getCellAtPos(x, y);
         Cell neighbor = m_cell.cellData.getNeighbor(direction);
-        m_cell = board.getCellAtPos(neighbor.x, neighbor.y);
+        if (neighbor != null)
+            m_cell = board.getCellAtPos(neighbor.x, neighbor.y);
+        else
+            return;
 
-        if (m_cell != null)
-        {
-            x = m_cell.cellData.x;
-            y = m_cell.cellData.y;
-            transform.position = m_cell.transform.position;
-        }
+        x = m_cell.cellData.x;
+        y = m_cell.cellData.y;
+        transform.position = m_cell.transform.position;
+
     }
+
 }

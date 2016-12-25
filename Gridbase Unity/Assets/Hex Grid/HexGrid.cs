@@ -77,6 +77,30 @@ public class HexGrid : ScriptableObject
     }
 
     /// <summary>
+    /// Creates a group of cells centered at a specific point.
+    /// </summary>
+    /// <param name="x">The x.</param>
+    /// <param name="y">The y.</param>
+    /// <param name="width">The width</param>
+    /// <param name="height">The height</param>
+    public List<Cell> createCellGroup(int x, int y, int width, int height)
+    {
+        List<Cell> created = new List<Cell>();
+        for (int mx = -width; mx <= width; mx++)
+        {
+            for (int my = -height; my <= height; my++)
+            {
+                Cell newCell = Cell.createCell(mx + x, my + y);
+                this.cells.Add(newCell);
+                created.Add(newCell);
+            }
+        }
+        return created;
+
+    }
+
+
+    /// <summary>
     /// Links the cells in the cell list to this grid
     /// </summary>
     public void linkCells()

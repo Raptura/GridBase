@@ -20,6 +20,9 @@ public class GridBaseEditor : EditorWindow
 
     Color lineColor = Color.white;
 
+    bool gridOpen, cellOpen;
+
+
     [MenuItem("Window/GridBase/HexGrid")]
     public static void ShowWindow()
     {
@@ -30,6 +33,7 @@ public class GridBaseEditor : EditorWindow
     {
         ManagementGUI();
         EditorGUILayout.Separator();
+
         if (board != null && grid != null)
         {
             GridGUI();
@@ -49,7 +53,6 @@ public class GridBaseEditor : EditorWindow
     void ManagementGUI()
     {
         EditorGUILayout.LabelField("Grid Base Version: 0.75");
-        EditorGUILayout.LabelField("Hex Grid Information");
         board = (HexGridBoard)EditorGUILayout.ObjectField("Board", board, typeof(HexGridBoard), allowSceneObjects: true);
         if (board != null)
         {
@@ -103,119 +106,125 @@ public class GridBaseEditor : EditorWindow
     /// </summary>
     void GridGUI()
     {
-        if (grid != null)
+        gridOpen = EditorGUILayout.Foldout(gridOpen, "Hex Grid Information");
+        if (gridOpen)
         {
-            if (GUILayout.Button("Export Grid"))
+            if (grid != null)
             {
-                string save = JsonUtility.ToJson(grid, true);
-
-                //TODO: Make User set the path up themselves
-                using (FileStream fs = new FileStream("Assets/Resources/HexGrids/NewHexGrid.json", FileMode.Create))
+                if (GUILayout.Button("Export Grid"))
                 {
-                    using (StreamWriter writer = new StreamWriter(fs))
+                    string save = JsonUtility.ToJson(grid, true);
+
+                    //TODO: Make User set the path up themselves
+                    using (FileStream fs = new FileStream("Assets/Resources/HexGrids/NewHexGrid.json", FileMode.Create))
                     {
-                        writer.Write(save);
-                        writer.Close();
-                        writer.Dispose();
+                        using (StreamWriter writer = new StreamWriter(fs))
+                        {
+                            writer.Write(save);
+                            writer.Close();
+                            writer.Dispose();
+                        }
+                        fs.Close();
+                        fs.Dispose();
                     }
-                    fs.Close();
-                    fs.Dispose();
                 }
-            }
 
-            EditorGUI.BeginChangeCheck();
-            grid.hasFlatTop = EditorGUILayout.Toggle("Has Flat Top", grid.hasFlatTop);
-            grid.cellSize = EditorGUILayout.FloatField("Cell Size", grid.cellSize);
+                EditorGUI.BeginChangeCheck();
+                grid.hasFlatTop = EditorGUILayout.Toggle("Has Flat Top", grid.hasFlatTop);
+                grid.cellSize = EditorGUILayout.FloatField("Cell Size", grid.cellSize);
 
-            if (GUI.changed)
-            {
-                EditorUtility.SetDirty(grid);
-                redrawAll();
-            }
-            EditorGUI.EndChangeCheck();
-            lineColor = EditorGUILayout.ColorField("(Debug) Line Color", lineColor);
+                if (GUI.changed)
+                {
+                    EditorUtility.SetDirty(grid);
+                    redrawAll();
+                }
+                EditorGUI.EndChangeCheck();
+                lineColor = EditorGUILayout.ColorField("(Debug) Line Color", lineColor);
 
-            foreach (MapCell mapCell in board.GetComponentsInChildren<MapCell>())
-            {
-                mapCell.drawCellDebug(lineColor);
+                foreach (MapCell mapCell in board.GetComponentsInChildren<MapCell>())
+                {
+                    mapCell.drawCellDebug(lineColor);
+                }
             }
         }
     }
 
     void CellGUI()
     {
-        EditorGUILayout.LabelField("Cell Information");
-
-        if (grid.cells.Count == 0)
+        cellOpen = EditorGUILayout.Foldout(cellOpen, "Cell Information");
+        if (cellOpen)
         {
-            EditorGUILayout.LabelField("There are no cells associated with this Hex Grid");
-        }
-        else {
-
-        }
-
-        if (grid != null)
-        {
-            //Cell Type
-            cellSprite = (Sprite)EditorGUILayout.ObjectField("Cell Sprite", cellSprite, typeof(Sprite), false);
-
-            //Group Size
-            EditorGUILayout.PrefixLabel("Group Size: " + groupSize);
-            groupSize = EditorGUILayout.IntField(groupSize);
-
-            //Positioning
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.PrefixLabel("X: ");
-            x = EditorGUILayout.IntField(x);
-            EditorGUILayout.PrefixLabel("Y: ");
-            y = EditorGUILayout.IntField(y);
-            EditorGUILayout.EndHorizontal();
-
-
-            if (GUILayout.Button("Create Cell"))
+            if (grid.cells.Count == 0)
             {
-                Cell newCell = Cell.createCell(x, y);
-                grid.cells.Add(newCell);
-                newCell.grid = grid;
+                EditorGUILayout.LabelField("There are no cells associated with this Hex Grid");
+            }
+            else {
 
-                MapCell mapCell = MapCell.createCell(grid, newCell);
-                mapCell.transform.SetParent(board.transform);
-                mapCell.GetComponent<SpriteRenderer>().sprite = cellSprite;
             }
 
-            if (GUILayout.Button("Create Cell Group"))
+            if (grid != null)
             {
-                List<Cell> created = grid.createCellGroup(x, y, groupSize);
+                //Cell Type
+                cellSprite = (Sprite)EditorGUILayout.ObjectField("Cell Sprite", cellSprite, typeof(Sprite), false);
 
-                foreach (Cell cell in created)
+                //Group Size
+                EditorGUILayout.PrefixLabel("Group Size: " + groupSize);
+                groupSize = EditorGUILayout.IntField(groupSize);
+
+                //Positioning
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PrefixLabel("X: ");
+                x = EditorGUILayout.IntField(x);
+                EditorGUILayout.PrefixLabel("Y: ");
+                y = EditorGUILayout.IntField(y);
+                EditorGUILayout.EndHorizontal();
+
+
+                if (GUILayout.Button("Create Cell"))
                 {
-                    grid.cells.Add(cell);
-                    cell.grid = grid;
+                    Cell newCell = Cell.createCell(x, y);
+                    grid.cells.Add(newCell);
+                    newCell.grid = grid;
 
-                    MapCell mapCell = MapCell.createCell(grid, cell);
-                    mapCell.transform.SetParent(board.transform);
-                    mapCell.GetComponent<SpriteRenderer>().sprite = cellSprite;
-
+                    MapCell mapCell = MapCell.createCell(grid, newCell);
                     mapCell.transform.SetParent(board.transform);
                     mapCell.GetComponent<SpriteRenderer>().sprite = cellSprite;
                 }
-            }
 
-            if (GUILayout.Button("Re - Generate Map"))
-            {
-                foreach (Transform child in board.transform)
+                if (GUILayout.Button("Create Cell Group"))
                 {
-                    DestroyImmediate(child.gameObject);
+                    List<Cell> created = grid.createCellGroup(x, y, groupSize);
+
+                    foreach (Cell cell in created)
+                    {
+                        grid.cells.Add(cell);
+                        cell.grid = grid;
+
+                        MapCell mapCell = MapCell.createCell(grid, cell);
+                        mapCell.transform.SetParent(board.transform);
+                        mapCell.GetComponent<SpriteRenderer>().sprite = cellSprite;
+
+                        mapCell.transform.SetParent(board.transform);
+                        mapCell.GetComponent<SpriteRenderer>().sprite = cellSprite;
+                    }
                 }
-                board.GenerateMap(grid);
 
+                if (GUILayout.Button("Re - Generate Map"))
+                {
+                    foreach (Transform child in board.transform)
+                    {
+                        DestroyImmediate(child.gameObject);
+                    }
+                    board.GenerateMap(grid);
+
+                }
             }
-        }
-        else {
+            else {
 
-            //Cell Size
-            EditorGUILayout.PrefixLabel("Cell Size");
-            cellSize = EditorGUILayout.FloatField(cellSize);
+                //Cell Size
+                EditorGUILayout.PrefixLabel("Cell Size");
+                cellSize = EditorGUILayout.FloatField(cellSize);
+            }
         }
     }
 

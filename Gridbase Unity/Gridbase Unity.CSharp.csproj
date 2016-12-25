@@ -79,6 +79,8 @@
     <Compile Include="Assets\Hex Grid\HexGrid.cs" />
     <Compile Include="Assets\Hex Grid\HexGridBoard.cs" />
     <Compile Include="Assets\Hex Grid\MapCell.cs" />
+    <Compile Include="Assets\Hex Tests\AutoGen\RoomGen.cs" />
+    <Compile Include="Assets\Hex Tests\AutoGen\RoomGenEditor.cs" />
     <Compile Include="Assets\Hex Tests\CameraScript.cs" />
     <Compile Include="Assets\Hex Tests\Player.cs" />
   </ItemGroup>

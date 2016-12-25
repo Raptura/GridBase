@@ -24,9 +24,9 @@ public class Player : MonoBehaviour
     void Update()
     {
         inputHandling();
-        //highlightCellLine(3);
-        highlightCellNeighbor();
-        highlightCellRemoteRadial(6);
+        highlightCellLine(3);
+        //highlightCellNeighbor();
+        //highlightCellRemoteRadial(6);
     }
 
     void inputHandling()

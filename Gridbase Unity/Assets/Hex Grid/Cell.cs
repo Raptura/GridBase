@@ -7,6 +7,7 @@ using System;
 [System.Serializable]
 public class Cell
 {
+    [NonSerialized]
     public HexGrid grid;
 
     public enum Direction
@@ -214,26 +215,28 @@ public class Cell
                 if (grid.hasFlatTop)
                     return getNeighbor(1, -1);
                 else
-                    return getNeighbor(1, -1);
+                    return getNeighbor(1, 0);
             case Direction.NorthWest:
                 if (grid.hasFlatTop)
                     return getNeighbor(-1, 0);
                 else
-                    return getNeighbor(0, -1);
+                    return getNeighbor(0, 1);
 
             case Direction.South:
                 if (grid.hasFlatTop)
                     return getNeighbor(0, 1);
                 else
                     return null;
+
             case Direction.SouthEast:
                 if (grid.hasFlatTop)
                     return getNeighbor(1, 0);
                 else
-                    return getNeighbor(1, 0);
+                    return getNeighbor(0, -1);
+
             case Direction.SouthWest:
                 if (grid.hasFlatTop)
-                    return getNeighbor(-1, 0);
+                    return getNeighbor(-1, 1);
                 else
                     return getNeighbor(-1, 0);
 
@@ -241,12 +244,12 @@ public class Cell
                 if (grid.hasFlatTop)
                     return null;
                 else
-                    return getNeighbor(-1, 0);
+                    return getNeighbor(-1, 1);
             case Direction.East:
                 if (grid.hasFlatTop)
                     return null;
                 else
-                    return getNeighbor(1, 0);
+                    return getNeighbor(1, -1);
 
             default:
                 return null;

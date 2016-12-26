@@ -25,6 +25,9 @@ public class RoomGen : MonoBehaviour
 
     public RangeAttribute roomWidth, roomHeight, enemyCount;
 
+    public bool hasFlatTop = true;
+    public float cellSize = 1.0f;
+
     public Sprite[] floorTiles;                           // An array of floor tile prefabs.
     public Sprite[] wallTiles;                            // An array of wall tile prefabs.
     public Sprite[] outerWallTiles;                       // An array of outer wall tile prefabs.
@@ -95,6 +98,9 @@ public class RoomGen : MonoBehaviour
     {
         room = ScriptableObject.CreateInstance<HexGrid>();
         room.cells = new System.Collections.Generic.List<Cell>();
+        room.hasFlatTop = hasFlatTop;
+        room.cellSize = cellSize;
+
         width = (int)Random.Range(roomWidth.min, roomWidth.max);
         height = (int)Random.Range(roomWidth.min, roomHeight.max);
         room.createCellGroup(0, 0, columns, rows);
@@ -265,13 +271,14 @@ public class RoomGen : MonoBehaviour
     /// <param name="xCoord"></param>
     /// <param name="yCoord"></param>
     /// <param name="parent"></param>
-    void InstantiateFromArray(GameObject[] prefabs, float xCoord, float yCoord, GameObject parent)
+    void InstantiateFromArray(GameObject[] prefabs, int xCoord, int yCoord, GameObject parent)
     {
         // Create a random index for the array.
         int randomIndex = Random.Range(0, prefabs.Length);
 
         // The position to be instantiated at is based on the coordinates.
-        Vector3 position = new Vector3(xCoord, yCoord, 0f);
+        MapCell cell = gridMap.getCellAtPos(xCoord, yCoord);
+        Vector3 position = new Vector3(cell.transform.position.x, cell.transform.position.y, 0f);
 
         // Create an instance of the prefab from the random index of the array.
         GameObject instance = Instantiate(prefabs[randomIndex], position, Quaternion.identity) as GameObject;

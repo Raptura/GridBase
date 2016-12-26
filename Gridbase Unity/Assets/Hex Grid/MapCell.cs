@@ -47,7 +47,8 @@ public class MapCell : MonoBehaviour
             posX = (float)cellData.x * (3f / 2f) * cellData.grid.cellSize;
             posY = (((float)cellData.x / 2f) - (cellData.y + cellData.x)) * Mathf.Sqrt(3) * cellData.grid.cellSize;
         }
-        else {
+        else
+        {
 
             posX = ((cellData.x) - ((float)(cellData.x + cellData.y) / 2f)) * Mathf.Sqrt(3) * cellData.grid.cellSize;
             posY = (float)(cellData.y + cellData.x) * (3f / 2f) * cellData.grid.cellSize;
@@ -138,7 +139,7 @@ public class MapCell : MonoBehaviour
             if (nextIndex >= 6)
                 nextIndex = 0;
 
-            Debug.DrawLine(verticies[i], verticies[nextIndex], lineColor ,0); //For Internal Use only
+            Debug.DrawLine(verticies[i], verticies[nextIndex], lineColor, 0); //For Internal Use only
         }
     }
 
@@ -148,6 +149,7 @@ public class MapCell : MonoBehaviour
     public void drawCellSprite()
     {
         GetComponent<SpriteRenderer>().color = Color.white;
+        transform.localScale = new Vector2(cellData.grid.cellSize, cellData.grid.cellSize);
     }
 
     void Update()

@@ -16,6 +16,9 @@ public class RoomGenEditor : Editor
         RoomGen gen = (RoomGen)target;
         serializedObject.Update();
 
+        gen.hasFlatTop = EditorGUILayout.Toggle("Has Flat Top", gen.hasFlatTop);
+        gen.cellSize = EditorGUILayout.FloatField("Cell Size", gen.cellSize);
+
         gen.columns = EditorGUILayout.IntField("Columns", gen.columns);
         gen.rows = EditorGUILayout.IntField("Rows", gen.columns);
         //Width Min max Slider

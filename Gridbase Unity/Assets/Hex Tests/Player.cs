@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         inputHandling();
-        highlightCellLine(3);
+        //highlightCellLine(3);
         //highlightCellNeighbor();
         //highlightCellRemoteRadial(6);
     }
@@ -38,38 +38,59 @@ public class Player : MonoBehaviour
                 direction = Cell.Direction.NorthEast;
                 moveForward();
                 lastMoved = Time.time;
-
             }
+
             else if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.A))
             {
                 direction = Cell.Direction.NorthWest;
                 moveForward();
                 lastMoved = Time.time;
             }
+
             else if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.D))
             {
                 direction = Cell.Direction.SouthEast;
                 moveForward();
                 lastMoved = Time.time;
             }
+
             else if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.A))
             {
                 direction = Cell.Direction.SouthWest;
                 moveForward();
                 lastMoved = Time.time;
             }
+
             else if (Input.GetKey(KeyCode.W))
             {
                 direction = Cell.Direction.North;
                 moveForward();
                 lastMoved = Time.time;
             }
+
             else if (Input.GetKey(KeyCode.S))
             {
                 direction = Cell.Direction.South;
                 moveForward();
                 lastMoved = Time.time;
             }
+
+
+            else if (Input.GetKey(KeyCode.A))
+            {
+                direction = Cell.Direction.West;
+                moveForward();
+                lastMoved = Time.time;
+            }
+
+
+            else if (Input.GetKey(KeyCode.D))
+            {
+                direction = Cell.Direction.East;
+                moveForward();
+                lastMoved = Time.time;
+            }
+
         }
     }
 

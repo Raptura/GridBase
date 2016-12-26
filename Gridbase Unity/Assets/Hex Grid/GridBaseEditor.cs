@@ -40,7 +40,8 @@ public class GridBaseEditor : EditorWindow
             EditorGUILayout.Separator();
             CellGUI();
         }
-        else {
+        else
+        {
             //do nothing
         }
     }
@@ -52,7 +53,7 @@ public class GridBaseEditor : EditorWindow
     /// </summary>
     void ManagementGUI()
     {
-        EditorGUILayout.LabelField("Grid Base Version: 0.75");
+        EditorGUILayout.LabelField("Grid Base Version: 1.00");
         board = (HexGridBoard)EditorGUILayout.ObjectField("Board", board, typeof(HexGridBoard), allowSceneObjects: true);
         if (board != null)
         {
@@ -72,10 +73,11 @@ public class GridBaseEditor : EditorWindow
 
             if (File.Exists(pathToHex))
             {
+                string hexDataAsJson = File.ReadAllText(pathToHex);
                 grid = CreateInstance<HexGrid>();
-                JsonUtility.FromJsonOverwrite(pathToHex, grid);
+                JsonUtility.FromJsonOverwrite(hexDataAsJson, grid);
                 grid.linkCells();
-                board.grid = grid;
+                board.GenerateMap(grid);
 
                 EditorUtility.SetDirty(grid);
             }
@@ -158,7 +160,8 @@ public class GridBaseEditor : EditorWindow
             {
                 EditorGUILayout.LabelField("There are no cells associated with this Hex Grid");
             }
-            else {
+            else
+            {
 
             }
 
@@ -219,7 +222,8 @@ public class GridBaseEditor : EditorWindow
 
                 }
             }
-            else {
+            else
+            {
 
                 //Cell Size
                 EditorGUILayout.PrefixLabel("Cell Size");
